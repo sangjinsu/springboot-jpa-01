@@ -112,3 +112,47 @@ public class Order {
 }
 ```
 
+
+
+### 엔티티 설계시 주의점
+
+#### 엔티티에는 가급적 Setter를 사용하지 말자 
+
+#### 모든 연관관계는 지연로딩으로 설정
+
+- 즉시로딩 EAGER는 예측이 어렵고 어떤 SQL이 실행될지 추적하기 어렵다. 특히 JPQL 실행시 N+1 문제가 자주 발생한다 
+- 실무에서 모든 연관관계는 지연로딩으로 설정해야 한다 
+- 연관된 엔티티를 함께 DB를 조회해야 하면 fetch join 또는 엔티티 그래프 기능을 사용한다 
+- OneToOne, ManyToOne 관계는 기본이 즉시로딩이므로 직접 지연로딩으로 설정해야 한다 
+
+### 컬렉션은 필드에서 초기화 하자 
+
+- null 문제에서 안전하다 
+- 하이버네이트는 엔티티를 영속화할 때, 컬렉션을 감싸서 하이버네이트가 제공하는 내장 컬렉션으로 변경한다. 만약 `getOrders()`처럼 임의의 메서드에서 컬렉션을 잘못 생성하면 하이버네이트 내부 메커니즘에 문제가 발생할 수 있다 
+
+
+
+### 연관관계 메서드
+
+- 기본편에서 다시 알아보자 
+
+```java
+Order
+    
+    // 연관관계 메서드 
+    public void setMember(Member member) {
+        this.member = member;
+        member.getOrders().add(this);
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
+    }
+```
+
