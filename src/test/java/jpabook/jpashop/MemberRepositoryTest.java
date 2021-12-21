@@ -1,6 +1,7 @@
 package jpabook.jpashop;
 
 import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +20,20 @@ class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
-    @Test
-    @Transactional
-    @Rollback(value = false)
-    public void testMember() {
-        Member member = new Member();
-        member.setUserName("memberA");
-
-        Long saveId = memberRepository.save(member);
-
-        Member findMember = memberRepository.find(saveId);
-
-        assertThat(findMember.getId()).isEqualTo(member.getId());
-        assertThat(findMember.getUserName()).isEqualTo(member.getUserName());
-        assertThat(findMember).isEqualTo(member);
-    }
+//    @Test
+//    @Transactional
+//    @Rollback(value = false)
+//    public void testMember() {
+//        Member member = new Member();
+//        member.setUserName("memberA");
+//
+//        Long saveId = memberRepository.save(member);
+//
+//        Member findMember = memberRepository.find(saveId);
+//
+//        assertThat(findMember.getId()).isEqualTo(member.getId());
+//        assertThat(findMember.getUserName()).isEqualTo(member.getUserName());
+//        assertThat(findMember).isEqualTo(member);
+//    }
 
 }

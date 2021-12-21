@@ -156,3 +156,94 @@ Order
     }
 ```
 
+
+
+### 애플리케이션 아키텍처
+
+#### 계층형 구조 
+
+- controller, web : 웹 계층
+- service: 비즈니스 로직 트랜잭션 처리
+- repository: JPA 를 직접 사용하는 계층, 엔티티 매니저 사용
+- domain: 엔티티가 모여 있는 계층, 모든 계층에서 사용 
+
+
+
+### 기술 설명 중요
+
+```java
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class MemberService {
+
+    private final MemberRepository memberRepository;
+
+//    @Autowired
+//    public MemberService(MemberRepository memberRepository) {
+//        this.memberRepository = memberRepository;
+//    }
+
+    /**
+     * 회원 가입
+     *
+     * @param member
+     * @return
+     */
+    @Transactional
+    public Long join(Member member) {
+        validateDuplicateMember(member);
+        memberRepository.save(member);
+        return member.getId();
+    }
+
+
+    private void validateDuplicateMember(Member member) {
+        List<Member> findMembers = memberRepository.findByName(member.getName());
+        if (!findMembers.isEmpty()) {
+            throw new IllegalStateException("이미 존재하는 회원입니다");
+        }
+    }
+
+
+    public List<Member> findMembers() {
+        return memberRepository.findAll();
+    }
+
+    public Member findOne(Long memberId) {
+        return memberRepository.findOne(memberId);
+    }
+}
+```
+
+- @Service
+- @Transactional: 트랜잭션, 영속성 컨텍스트
+  - readOnly=true: 데이터의 변경이 없는 읽기 전용 메서드에 사용, 영속성 컨텍스트를 플러시 하지 않으므로 약간의 성능 향상으로 읽기 전용에는 다 적용한다 
+
+- @Autowired
+  - 생성자 인젝션에 많이 사용
+  - 생성자가 하나면 생략 가능
+
+#### 생성자 주입
+
+- 생성자 주입 방식 권장
+- 변경 불가능한 안전한 객체 생성 가능
+- 생성자가 하나면 @Autowired 생략 가능
+- final 키워드 추가하면 컴파일 시점에 memberRepository 설정하지 않는 오류를 체크할 수 있다 
+
+
+
+#### lombok
+
+- @RequiredArgsConstructor
+
+```java
+Repository
+@RequiredArgsConstructor
+public class MemberRepository {
+//    @PersistenceContext
+//    private EntityManager em;
+    
+    private EntityManager em;
+```
+
