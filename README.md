@@ -236,6 +236,8 @@ public class MemberService {
 #### lombok
 
 - @RequiredArgsConstructor
+- final 변수만 생성자에 주입
+- @AllArgsConstructor 모든 변수를 생성자에 주입
 
 ```java
 Repository
