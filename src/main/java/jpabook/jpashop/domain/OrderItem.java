@@ -11,9 +11,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Table(name = "order_item")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
     @Id
+    @GeneratedValue
     @Column(name = "order_item_id")
     private Long id;
 
