@@ -249,3 +249,39 @@ public class MemberRepository {
     private EntityManager em;
 ```
 
+
+
+### 변경 감지와 병합
+
+#### 준영속 엔티티
+
+영속성 컨텍스트가 더이상 관리하지 않는 엔티티이다
+
+#### 준영속 엔티티를 수정하는 2가지 방법
+
+- 변경 감지 기능 사용
+- 병합 사용
+
+1. 변경 감지
+
+   ```java
+       @Transactional
+       public void updateItem(Long itemId, Item param) {
+           Item findItem = itemRepository.findOne(itemId);
+           findItem.setPrice(param.getPrice());
+           findItem.setName(param.getName());
+           findItem.setStockQuantity(param.getStockQuantity());
+       }
+   ```
+
+   트랜잭션 커밋 시점에 변경 감지 == Dirty Checking 동작해서 데이터베이스에 Update SQL 실행 
+
+2. 병합 사용
+
+   병합은 준영속 상태의 엔티티를 영속 상태로 변경할 때 사용하는 기능이다
+
+   #### 주의
+
+   변경 감지 기능을 사용하면 원하는 속성만 선택해서 변경할 수 있지만 병합은 모든 속성이 변경된다.
+
+   병합시 값이 없으면 null 로 업데이트할 위험도 있다 
